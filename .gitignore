@@ -218,3 +218,12 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Données IMDb (plusieurs Go)
+data/
+
+# Fichiers générés par Spark
+spark-warehouse/
+metastore_db/
+derby.log
+checkpoints/
