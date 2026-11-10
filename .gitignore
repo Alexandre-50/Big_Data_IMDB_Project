@@ -227,3 +227,4 @@ spark-warehouse/
 metastore_db/
 derby.log
 checkpoints/
+spark.log
