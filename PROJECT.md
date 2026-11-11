@@ -4,23 +4,34 @@
 
 | Name | Email |
 |------|-------|
-| Alexandre Celles |alexandre.celles@edu.ece.fr |
-| Romain Arcis |romain.arcis@edu.ece.fr |
+| Alexandre Celles | alexandre.celles@edu.ece.fr |
+| Romain Arcis | romain.arcis@edu.ece.fr |
 
 ## Prerequisites
 
-The whole project runs inside differents Docker containers which are Apache Spark and Apache Kafka and do not need to be installed on the host machine.
+The whole project runs inside two Docker containers (Apache Spark and Apache
+Kafka), so neither needs to be installed on the host machine.
 
 ### Software
 
-- Git (https://git-scm.com/downloads) (Git Bash on Windows) to clone the repository
-- Docker Desktop (https://docs.docker.com/get-started/get-docker/) with Docker Compose, to run the Spark and Kafka containers
-- A web browser to access JupyterLab as Firefox, Chrome or anything else
+- [Git](https://git-scm.com/downloads) (Git Bash on Windows) to clone the repository
+- [Docker Desktop](https://docs.docker.com/get-started/get-docker/) with Docker
+  Compose, to run the Spark and Kafka containers
+- A web browser (Chrome, Firefox...) to access JupyterLab
 
 ### Hardware
 
-- At least **8 GB of RAM** because Spark and Kafka are memory-intensive
-- At least **20 GB of free disk space** with Docker images (~8 GB), IMDb dataset and its Parquet conversion
+- At least **8 GB of RAM**, because Spark and Kafka are memory-intensive
+- At least **20 GB of free disk space** for the Docker images (~8 GB), the IMDb
+  dataset (~2 GB) and its Parquet tables (raw and cleaned)
+
+### Dataset
+
+The [IMDb non-commercial datasets](https://developer.imdb.com/non-commercial-datasets/)
+are used for personal and non-commercial purposes only. They are not stored in
+this repository and must be downloaded (see Data Preparation). IMDb updates the
+files daily; the results in REPORT.md were produced with the files downloaded on
+26 October 2026.
 
 ### Versions used
 
@@ -108,11 +119,69 @@ The output must display `4.2.0` followed by a table with the numbers 0 to 4.
 docker compose down
 ```
 
+### Troubleshooting (Windows, 8 GB machines)
+
+- **`No such file or directory` with `docker exec -w /home/jovyan/work`**: Git
+  Bash converts paths that start with `/`. Run `export MSYS_NO_PATHCONV=1` in
+  each new Git Bash window.
+- **Container name already in use**: an old container named `imdb_spark` or
+  `imdb_kafka` exists. List them with `docker ps -a` and remove the old one.
+- **`Cannot allocate memory`, Spark freezing or Docker crashing**: give 5 GB to
+  WSL by creating `C:\Users\<user>\.wslconfig` with the content below, then run
+  `wsl --shutdown` and restart Docker Desktop. Also stop Kafka during batch jobs
+  (`docker stop imdb_kafka`) and run Spark on 2 cores with
+  `SPARK_MASTER="local[2]"`.
+
+  ```ini
+  [wsl2]
+  memory=5GB
+  processors=4
+  swap=4GB
+  ```
+
+- **Disk full**: keep at least 10 GB free. Spark writes temporary files during
+  large joins and Docker's virtual disk does not shrink automatically.
+
 ## Running the Project
 
 ### Data Preparation
 
-To be completed.
+All commands are run from the repository folder in Git Bash
+(`export MSYS_NO_PATHCONV=1` first on Windows).
+
+1. Download the 7 IMDb files into `data/raw/` (about 1.9 GB, do not unzip them):
+
+   ```bash
+   mkdir -p data/raw && cd data/raw
+   for f in name.basics title.akas title.basics title.crew title.episode title.principals title.ratings; do
+     curl -O https://datasets.imdbws.com/$f.tsv.gz
+   done
+   cd ../..
+   ```
+
+2. Run the four preparation scripts in this order (Spark logs go to `spark.log`):
+
+   ```bash
+   docker stop imdb_kafka
+   for script in ingest_raw null_analysis data_quality clean_data; do
+     docker exec -w /home/jovyan/work -e PYTHONPATH=/home/jovyan/work \
+       -e SPARK_MASTER="local[2]" imdb_spark \
+       spark-submit --driver-memory 2g src/preparation/$script.py 2> spark.log
+   done
+   ```
+
+| Script | Question | Output |
+|--------|----------|--------|
+| `ingest_raw.py` | Ingestion | `data/parquet/` (raw tables, all columns as strings) |
+| `null_analysis.py` | 1.1 and 1.2 | `results/preparation/missing_values.csv` |
+| `data_quality.py` | 1.3 | `results/preparation/data_quality.csv` |
+| `clean_data.py` | 1.4 | `data/processed/` (cleaned, typed tables) and `results/preparation/cleaning_summary.csv` |
+
+Every script can be re-run after an interruption: tables or checks that are
+already finished are skipped. On an 8 GB laptop the whole preparation takes
+several hours, most of it spent on the joins of `title.principals`
+(102 million rows). On a machine with more memory, drop
+`-e SPARK_MASTER="local[2]"` to use all the cores.
 
 ### Data Exploration
 
@@ -172,6 +241,7 @@ To be completed.
 
 | Tool | Tasks |
 |------|-------|
-| Claude (Anthropic) | ... |
-| Claude (Anthropic) | Streaming code (Kafka producer, Spark Structured Streaming pipeline, metrics script) and debugging, reviewed and tested by us. Not used for the explanations of REPORT.md. |
-| 
+| Claude (Anthropic) | Git workflow and repository structure, Docker Compose environment and its troubleshooting (memory, disk, Windows paths), setup and run instructions of this file, data preparation code (ingestion, missing value analysis, data quality checks, cleaning), reviewed and tested by us. |
+| Claude (Anthropic) | Streaming code (Kafka producer, Spark Structured Streaming pipeline, metrics script) and debugging, reviewed and tested by us. |
+
+AI tools were not used to write the explanations and reasoning of REPORT.md.
