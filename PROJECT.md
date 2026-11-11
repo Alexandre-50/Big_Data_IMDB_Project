@@ -124,7 +124,45 @@ To be completed.
 
 ### Streaming
 
-To be completed.
+The streaming part needs the Parquet tables (see Data Preparation) and both
+containers running (`docker start imdb_kafka` if Kafka was stopped). On
+Windows Git Bash, run `export MSYS_NO_PATHCONV=1` first.
+
+1. Install the Python dependencies of the producer (once per container):
+
+   ```bash
+   docker exec -w /home/jovyan/work imdb_spark pip install -r requirements.txt
+   ```
+
+2. Start the producer, which forwards the Wikimedia `recentchange` stream
+   to the Kafka topic `wikipedia-changes` (here for 35 minutes, in the
+   background):
+
+   ```bash
+   docker exec -d -w /home/jovyan/work -e PYTHONPATH=/home/jovyan/work imdb_spark \
+     sh -c "python -m src.streaming.wikipedia_producer --duration 2100 > /tmp/producer.log 2>&1"
+   ```
+
+3. Run the Spark Structured Streaming pipeline for 30 minutes. The first
+   run also builds the IMDb lookup table in `data/processed/streaming_lookup`:
+
+   ```bash
+   docker exec -w /home/jovyan/work -e PYTHONPATH=/home/jovyan/work imdb_spark \
+     spark-submit --driver-memory 2g \
+     --packages org.apache.spark:spark-sql-kafka-0-10_2.13:4.2.0 \
+     src/streaming/streaming_pipeline.py --duration 1800
+   ```
+
+   Matched events are printed in the console every 30 seconds and saved in
+   `results/streaming/` (Parquet), with checkpoints in `checkpoints/streaming/`.
+   Delete both folders to start a new test from scratch.
+
+4. Compute the metrics of the run (written to `results/streaming/summary.md`):
+
+   ```bash
+   docker exec -w /home/jovyan/work -e PYTHONPATH=/home/jovyan/work imdb_spark \
+     spark-submit --driver-memory 2g src/streaming/streaming_report.py
+   ```
 
 ### Open Question
 
@@ -135,4 +173,5 @@ To be completed.
 | Tool | Tasks |
 |------|-------|
 | Claude (Anthropic) | ... |
+| Claude (Anthropic) | Streaming code (Kafka producer, Spark Structured Streaming pipeline, metrics script) and debugging, reviewed and tested by us. Not used for the explanations of REPORT.md. |
 | 
