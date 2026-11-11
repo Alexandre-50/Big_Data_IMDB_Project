@@ -1,0 +1,28 @@
+check,table,rows_checked,issue_count,issue_pct,examples
+Death year before birth year,name.basics,15765984,27,0.0002,"nm0012634, nm0012635, nm0034922"
+Alive person older than 120 years,name.basics,15765984,2796,0.0177,"nm0005637, nm0007417, nm0007643"
+End year before start year,title.basics,12898691,0,0.0,
+End year on a non-series title,title.basics,12898691,0,0.0,
+Start year in the future,title.basics,12898691,5180,0.0402,"tt0578944, tt0578945, tt0578947"
+Non-numeric birth or death year,name.basics,15765984,0,0.0,
+Non-numeric start or end year,title.basics,12898691,0,0.0,
+Runtime not numeric or <= 0,title.basics,12898691,4,0.0,"tt0348126, tt0454640, tt0830188"
+isAdult not equal to 0 or 1,title.basics,12898691,0,0.0,
+Rating outside 1-10 or votes <= 0,title.ratings,1725891,0,0.0,
+Season or episode number <= 0,title.episode,9978123,7108,0.0712,"tt0056578, tt0059753, tt0063046"
+Rating of an unknown title,title.ratings,1725891,0,0.0,
+Episode of an unknown title,title.episode,9978123,0,0.0,
+Episode with an unknown parent series,title.episode,9978123,5,0.0001,"tt28606619, tt28606619, tt28606619"
+Principal on an unknown title,title.principals,102512651,206,0.0002,"tt13289844, tt13289844, tt1440044"
+Principal with an unknown person,title.principals,102512651,7403,0.0072,"nm12895852, nm16528874, nm17132200"
+Director with an unknown person,title.crew,9568274,419,0.0044,"nm16027302, nm17752545, nm17752595"
+Writer with an unknown person,title.crew,15201667,1146,0.0075,"nm16027302, nm17752391, nm17752395"
+Alternative title of an unknown title,title.akas,59949689,0,0.0,
+Known-for title that does not exist,name.basics,25513329,10,0.0,"tt50063623, tt10155862, tt39377293"
+Malformed genre in genres list,title.basics,12898691,0,0.0,
+Malformed title id in knownForTitles,name.basics,15765984,0,0.0,
+Malformed person id in directors,title.crew,12898691,0,0.0,
+Malformed person id in writers,title.crew,12898691,0,0.0,
+Duplicated tconst,title.basics,12898691,0,0.0,
+Duplicated nconst,name.basics,15765984,0,0.0,
+"Duplicated (tconst, ordering)",title.principals,102512651,0,0.0,
