@@ -185,7 +185,39 @@ several hours, most of it spent on the joins of `title.principals`
 
 ### Data Exploration
 
-To be completed.
+The exploration scripts read the cleaned tables of `data/processed/`, so the
+Data Preparation must be run first. Each script answers one question (2.2 and
+2.3 share one script) and can be run on its own, in any order:
+
+```bash
+docker stop imdb_kafka
+for script in runtime_outliers genre_popularity director_ratings \
+    series_episode_ratings actor_languages actor_careers \
+    multi_talented_professionals; do
+  docker exec -w /home/jovyan/work -e PYTHONPATH=/home/jovyan/work \
+    -e SPARK_MASTER="local[2]" imdb_spark \
+    spark-submit --driver-memory 2g src/exploration/$script.py 2> spark.log
+done
+```
+
+Each script prints its main tables in Markdown and saves its full results as
+CSV files in `results/exploration/`:
+
+| Script | Question | Output files |
+|--------|----------|--------------|
+| `runtime_outliers.py` | 2.1 | `q2_1_runtime_by_genre.csv`, `q2_1_atypical_runtime_movies.csv` |
+| `genre_popularity.py` | 2.2 and 2.3 | `q2_2_top3_genres_per_year.csv`, `q2_3_top3_vs_rest.csv`, `q2_3_top3_frequency.csv` |
+| `director_ratings.py` | 2.4 | `q2_4_one_hit_directors.csv` |
+| `series_episode_ratings.py` | 2.5 | `q2_5_series_worst_episode_last_season.csv` |
+| `actor_languages.py` | 2.6 | `q2_6_actors_2plus_languages.csv`, `q2_6_actors_3plus_languages.csv`, `q2_6_successful_movie_languages.csv`, `q2_6_language_coverage.csv`, `q2_6_top_languages.csv` |
+| `actor_careers.py` | 2.7 | `q2_7_summary.csv`, `q2_7_early_peak_actors.csv` |
+| `multi_talented_professionals.py` | 2.8 | `q2_8_summary.csv`, `q2_8_by_combination.csv`, `q2_8_multi_talented_people.csv` |
+
+The thresholds used by each question (minimum runtime, minimum number of
+votes, success rating, etc.) are constants at the top of each script. On an
+8 GB laptop, scripts 2.1 to 2.5 take a few minutes each, and scripts 2.6 to
+2.8 between 15 and 40 minutes, because they join `title.principals`
+(102 million rows).
 
 ### Data Enrichment
 
@@ -241,7 +273,7 @@ To be completed.
 
 | Tool | Tasks |
 |------|-------|
-| Claude (Anthropic) | Git workflow and repository structure, Docker Compose environment and its troubleshooting (memory, disk, Windows paths), setup and run instructions of this file, data preparation code (ingestion, missing value analysis, data quality checks, cleaning), reviewed and tested by us. |
+| Claude (Anthropic) | Git workflow and repository structure, Docker Compose environment and its troubleshooting (memory, disk, Windows paths), setup and run instructions of this file, data preparation code (ingestion, missing value analysis, data quality checks, cleaning) and data exploration code (questions 2.1 to 2.8), reviewed and tested by us. |
 | Claude (Anthropic) | Streaming code (Kafka producer, Spark Structured Streaming pipeline, metrics script) and debugging, reviewed and tested by us. |
 
 AI tools were not used to write the explanations and reasoning of REPORT.md.
