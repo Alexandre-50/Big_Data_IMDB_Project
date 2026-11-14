@@ -171,7 +171,71 @@ Top 10 most edited IMDb entities:
 
 ### Question and Motivation
 
+**Question:** has the share of popular films led by an actress grown
+between 1980 and 2025, in which genres, and are actress-led films rated
+and voted differently from actor-led films?
+
 ### Results
+
+Scope: 38 297 feature films (movie, at least 40 minutes, 1980-2025, at
+least 1 000 votes) with a credited lead. Lead = performer (actor or
+actress) with the smallest billing order in `title.principals`. Full
+tables: `results/open_question/`.
+
+Share of actress-led films, every five years:
+
+| Year | Films | Actress-led % | Actresses in top-3 cast % | Avg rating, actress-led | Avg rating, actor-led | Median votes, actress-led | Median votes, actor-led |
+|---|---|---|---|---|---|---|---|
+| 1980 | 287 | 22.3 | 35.2 | 6.01 | 6.32 | 2 652 | 3 781 |
+| 1985 | 314 | 21.3 | 32.5 | 6.38 | 6.27 | 3 277 | 4 354 |
+| 1990 | 364 | 20.3 | 33.2 | 6.19 | 6.16 | 3 366 | 4 618 |
+| 1995 | 429 | 27.7 | 34.8 | 6.21 | 6.32 | 5 518 | 5 377 |
+| 2000 | 578 | 31.0 | 37.8 | 6.21 | 6.27 | 4 118 | 4 833 |
+| 2005 | 843 | 27.6 | 37.4 | 6.07 | 6.17 | 3 739 | 4 261 |
+| 2010 | 1 054 | 27.7 | 35.5 | 5.99 | 6.15 | 3 771 | 3 757 |
+| 2015 | 1 383 | 31.0 | 38.1 | 5.93 | 5.99 | 3 187 | 3 512 |
+| 2020 | 1 238 | 38.7 | 41.2 | 5.70 | 5.85 | 3 975 | 3 188 |
+| 2025 | 1 308 | 32.9 | 37.7 | 6.05 | 6.17 | 2 865 | 2 997 |
+
+Highest yearly share: 38.7 % (2020). Lowest: 18.9 % (1989).
+
+Share of actress-led films per genre (genres with at least 500 films):
+
+| Genre | Films | Actress-led % | 1980s % | 2020s % | Change (points) |
+|---|---|---|---|---|---|
+| Horror | 5 434 | 44.7 | 32.2 | 52.2 | +20.0 |
+| Mystery | 3 427 | 39.9 | 27.8 | 48.7 | +20.9 |
+| Romance | 6 332 | 39.3 | 32.4 | 46.0 | +13.6 |
+| Animation | 1 508 | 35.6 | 25.2 | 39.2 | +14.0 |
+| Fantasy | 2 196 | 32.5 | 22.6 | 42.7 | +20.1 |
+| Drama | 21 734 | 32.0 | 25.7 | 36.7 | +11.0 |
+| Music | 1 012 | 31.4 | 24.8 | 34.2 | +9.4 |
+| Family | 1 554 | 31.3 | 27.0 | 36.2 | +9.2 |
+| Thriller | 6 641 | 31.1 | 28.2 | 36.0 | +7.8 |
+| Comedy | 13 597 | 27.2 | 19.1 | 35.5 | +16.4 |
+| Biography | 1 848 | 27.2 | 29.9 | 30.3 | +0.4 |
+| Sci-Fi | 1 878 | 27.1 | 16.2 | 40.9 | +24.7 |
+| Documentary | 714 | 26.8 | 29.4 | 30.7 | +1.3 |
+| History | 1 337 | 24.0 | 21.8 | 27.2 | +5.4 |
+| Adventure | 4 090 | 23.8 | 16.3 | 31.3 | +15.0 |
+| War | 682 | 21.4 | 15.2 | 25.0 | +9.8 |
+| Crime | 6 297 | 20.1 | 14.4 | 26.7 | +12.3 |
+| Action | 7 767 | 16.6 | 10.0 | 21.6 | +11.6 |
+| Sport | 692 | 14.0 | 8.6 | 19.5 | +10.9 |
+
+Rating gap (actress-led minus actor-led average rating) and votes ratio
+(geometric mean votes, actress-led / actor-led), computed inside each
+(genre, decade) group with at least 30 films of each kind, then weighted
+by the number of films:
+
+| Decade | Film-genre rows | Groups | Weighted rating gap | Weighted votes ratio |
+|---|---|---|---|---|
+| 1980s | 7 377 | 14 | -0.178 | 0.734 |
+| 1990s | 10 012 | 15 | -0.111 | 0.766 |
+| 2000s | 19 013 | 18 | -0.167 | 0.896 |
+| 2010s | 31 883 | 20 | -0.147 | 0.922 |
+| 2020s | 19 530 | 18 | -0.214 | 1.076 |
+| All | 87 815 | 85 | -0.165 | 0.917 |
 
 ### Key Takeaways
 

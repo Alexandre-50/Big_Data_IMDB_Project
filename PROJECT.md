@@ -267,13 +267,19 @@ Windows Git Bash, run `export MSYS_NO_PATHCONV=1` first.
 
 ### Open Question
 
-To be completed.
+Needs the Parquet tables (see Data Preparation). Writes `by_year.csv`,
+`by_genre.csv`, `rating_gap.csv` and `summary.md` in `results/open_question/`:
+
+```bash
+docker exec -w /home/jovyan/work -e PYTHONPATH=/home/jovyan/work imdb_spark \
+  spark-submit --driver-memory 2g src/open_question/female_leads.py
+```
 
 ## AI/LLM Tools Declaration
 
 | Tool | Tasks |
 |------|-------|
 | Claude (Anthropic) | Git workflow and repository structure, Docker Compose environment and its troubleshooting (memory, disk, Windows paths), setup and run instructions of this file, data preparation code (ingestion, missing value analysis, data quality checks, cleaning) and data exploration code (questions 2.1 to 2.8), reviewed and tested by us. |
-| Claude (Anthropic) | Streaming code (Kafka producer, Spark Structured Streaming pipeline, metrics script) and debugging, reviewed and tested by us. |
+| Claude (Anthropic) | Streaming code (Kafka producer, Spark Structured Streaming pipeline, metrics script), data enrichment code (target selection, Wikipedia collection, Spark cleaning), open question analysis code, and debugging, reviewed and tested by us. |
 
 AI tools were not used to write the explanations and reasoning of REPORT.md.
