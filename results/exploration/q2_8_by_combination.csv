@@ -1,0 +1,8 @@
+combination,person_movies,people,avg_rating,avg_votes
+actor,62995,6679,5.86,21346
+director+writer,59946,17034,5.96,10282
+director,28090,8039,5.94,14227
+writer,27595,7860,5.92,23440
+actor+director+writer,6422,3429,5.6,6396
+actor+writer,5632,2790,5.62,12793
+actor+director,1568,987,5.71,11211
