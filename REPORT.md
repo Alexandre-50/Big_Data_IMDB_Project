@@ -116,6 +116,56 @@ Looking ahead to question 1.4, this distinction will guide our processing strate
 
 ### Results
 
+Scope: for every genre and year from 1980 to 2025, the 10 most voted
+feature films (movie, at least 40 minutes). Sources: Wikidata (IMDb ID
+property P345) to find the English Wikipedia article, then Wikipedia for
+the texts. Collected on 14 November 2026. Coverage table:
+`results/enrichment/coverage.csv`, readable sample (Drama and Sci-Fi,
+2010, top 3): `results/enrichment/sample_enriched.json`.
+
+| Metric | Value |
+|---|---|
+| Slots (genre, year, rank) | 10 198 |
+| Distinct films | 7 185 |
+| Distinct principals kept | 10 948 |
+| Median synopsis length | 593 words |
+
+Synopsis coverage (distinct films):
+
+| Status | Films | % |
+|---|---|---|
+| Plot section of the Wikipedia article | 5 986 | 83.31 |
+| Introduction only (article without a Plot section) | 380 | 5.29 |
+| No Wikidata item for the IMDb id | 490 | 6.82 |
+| Wikidata item but no English article | 328 | 4.57 |
+| Article without text | 1 | 0.01 |
+
+Biography coverage (principals kept):
+
+| Status | People | % |
+|---|---|---|
+| Biography (introduction of the Wikipedia article) | 8 943 | 81.69 |
+| No Wikidata item for the IMDb id | 1 404 | 12.82 |
+| Wikidata item but no English article | 600 | 5.48 |
+| Article without text | 1 | 0.01 |
+
+Films by number of principals with a biography (up to 6 candidates per
+film, the first 3 with a biography are kept):
+
+| Principals with a biography | Films | % |
+|---|---|---|
+| 3 | 6 101 | 84.91 |
+| 2 | 376 | 5.23 |
+| 1 | 377 | 5.25 |
+| 0 | 331 | 4.61 |
+
+Fields of an enriched record: genre, year, rank in genre, IMDb id,
+title, rating, votes, `synopsis`, `synopsis_status`, `synopsis_words`,
+`synopsis_lineage` (source URL, Wikipedia title, Wikidata item, retrieval
+time, extraction method), and `principals`: array of (billing rank, IMDb
+id, name, category, `biography`, `biography_status`,
+`biography_lineage`).
+
 ### Methodological Explanation
 
 ## 4. Streaming
