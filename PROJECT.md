@@ -221,7 +221,36 @@ votes, success rating, etc.) are constants at the top of each script. On an
 
 ### Data Enrichment
 
-To be completed.
+Needs the Parquet tables (see Data Preparation) and an internet
+connection. The three steps run in order; on Windows Git Bash, run
+`export MSYS_NO_PATHCONV=1` first.
+
+1. Select the films (top 10 per genre and year, 1980-2025) and their
+   first principals. The period and sizes are options (`--first-year`,
+   `--last-year`, `--top-n`, `--candidates`):
+
+   ```bash
+   docker exec -w /home/jovyan/work -e PYTHONPATH=/home/jovyan/work imdb_spark \
+     spark-submit --driver-memory 2g src/enrichment/select_targets.py
+   ```
+
+2. Collect the Wikipedia texts (about 1 h 30 for the full selection; the
+   script is resumable, re-run it after an interruption). Raw answers go
+   to `data/enrichment/raw/`:
+
+   ```bash
+   docker exec -w /home/jovyan/work -e PYTHONPATH=/home/jovyan/work imdb_spark \
+     python -u -m src.enrichment.collect_wikipedia
+   ```
+
+3. Clean and shape the data with Spark. The enriched dataset is written
+   to `data/enrichment/enriched_films` (Parquet), the coverage tables and
+   a sample to `results/enrichment/`:
+
+   ```bash
+   docker exec -w /home/jovyan/work -e PYTHONPATH=/home/jovyan/work imdb_spark \
+     spark-submit --driver-memory 2g src/enrichment/build_enrichment.py
+   ```
 
 ### Streaming
 
